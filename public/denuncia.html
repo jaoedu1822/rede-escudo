@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fazer denúncia | Rede Escudo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav>
+    <a href="index.html">Conversar</a>
+    <a href="denuncia.html">Fazer denúncia</a>
+    <a href="status.html">Acompanhar caso</a>
+  </nav>
+  <h1>Denúncia anônima</h1>
+  <p class="alerta">Não informe seu nome, telefone, endereço ou escola. Não envie fotos íntimas:
+  use só prints de conversas, links e IDs. Emergência: <b>190</b> · Apoio emocional: <b>188</b></p>
+
+  <div id="form">
+    <label for="plataforma">Plataforma</label>
+    <select id="plataforma">
+      <option>Discord</option>
+      <option>Instagram</option>
+      <option>WhatsApp</option>
+      <option>TikTok</option>
+      <option>Outra</option>
+    </select>
+
+    <label for="relato">O que aconteceu?</label>
+    <textarea id="relato" rows="6" placeholder="Conte com suas palavras. Quanto mais detalhes, melhor."></textarea>
+
+    <h2>Provas e informações (opcional)</h2>
+    <p>Link da mensagem, ID do usuário, link do servidor, data e hora.</p>
+    <div id="evidencias"></div>
+    <button id="add" type="button">+ Adicionar item</button>
+    <br><br>
+    <button id="enviar">Enviar denúncia</button>
+    <p id="erro" class="erro"></p>
+  </div>
+
+  <div id="resultado" class="caixa oculto">
+    <h2>Denúncia recebida</h2>
+    <p>Protocolo: <span id="protocolo" class="codigo"></span></p>
+    <p>Código secreto: <span id="codigo" class="codigo"></span></p>
+    <p class="alerta"><b>Anote os dois agora.</b> Não mostraremos o código de novo, e sem ele
+    você não consegue acompanhar o caso.</p>
+  </div>
+
+  <script src="denuncia.js"></script>
+</body>
+</html>

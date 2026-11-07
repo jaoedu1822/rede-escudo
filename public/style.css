@@ -1,0 +1,24 @@
+body { font-family: system-ui, sans-serif; max-width: 640px; margin: 0 auto; padding: 16px; background: #0f1724; color: #eef2f7; }
+body.larga { max-width: 960px; }
+a { color: #9ecbff; }
+nav { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+h1 { font-size: 1.5rem; }
+label { display: block; font-weight: 600; }
+input, select, textarea { width: 100%; padding: 10px; margin: 6px 0 14px; border-radius: 6px; border: 1px solid #334155; background: #17223a; color: #eef2f7; box-sizing: border-box; font: inherit; }
+button { padding: 10px 16px; border: 0; border-radius: 6px; background: #3b82f6; color: #fff; cursor: pointer; font: inherit; }
+button:disabled { opacity: 0.5; cursor: wait; }
+.alerta { background: #3b1d1d; padding: 10px; border-radius: 8px; }
+.caixa { background: #17223a; padding: 14px; border-radius: 8px; margin: 12px 0; }
+.oculto { display: none; }
+.erro { color: #fca5a5; }
+.linha { display: flex; gap: 8px; }
+.linha input { margin: 0; }
+.ev { display: flex; gap: 8px; }
+.ev select { width: 40%; }
+#chat { min-height: 300px; margin: 16px 0; }
+.eu { text-align: right; color: #9ecbff; }
+.codigo { font-family: monospace; font-size: 1.4rem; }
+.urg-critica { border-left: 5px solid #ef4444; }
+.urg-alta { border-left: 5px solid #f59e0b; }
+.urg-media { border-left: 5px solid #3b82f6; }
+.urg-baixa { border-left: 5px solid #22c55e; }

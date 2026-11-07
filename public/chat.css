@@ -1,0 +1,636 @@
+/* Rede Escudo: tela de conversa.
+   Ideia visual: quem responde é um escudo. Ele "se desenha" enquanto pensa, e a resposta aparece
+   como uma carta aberta (sem balão), para listas e passos terem espaço. Só a pessoa tem balão. */
+
+:root {
+  color-scheme: dark;
+  --fundo: #0c1424;
+  --superficie: #111c31;
+  --linha: #223250;
+  --texto: #e9eef7;
+  --suave: #93a4c0;
+  --acento: #7db4ff;
+  --balao: #1a2b4b;
+  --balao-borda: #2b4272;
+  --alerta: #ffcf70;
+  --erro: #ff9b9b;
+  --respiro-chat: 22px; /* espaço no topo da conversa (o cabeçalho fixo do formulário compensa) */
+  --fonte: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background:
+    radial-gradient(900px 480px at 50% -120px, #172a57 0%, transparent 70%),
+    var(--fundo);
+  color: var(--texto);
+  font: 16px/1.6 var(--fonte);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--acento); }
+button, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+
+.app {
+  height: 100vh;
+  height: 100dvh;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Topo ---------- */
+.topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 0 10px;
+}
+.marca-site { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.marca-site h1 { margin: 0; font-size: 1.15rem; font-weight: 650; letter-spacing: -0.01em; line-height: 1.2; }
+.marca-site p { margin: 2px 0 0; font-size: 0.82rem; color: var(--suave); line-height: 1.3; }
+.logo .escudo { width: 36px; height: 36px; display: block; }
+
+.fantasma {
+  flex: none;
+  background: transparent;
+  border: 1px solid var(--linha);
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  color: var(--suave);
+  cursor: pointer;
+}
+.fantasma:hover:not(:disabled) { color: var(--texto); border-color: var(--suave); }
+.fantasma:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.emergencia {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: rgba(255, 207, 112, 0.08);
+  border: 1px solid rgba(255, 207, 112, 0.26);
+  color: #ffe3a8;
+  font-size: 0.86rem;
+}
+.emergencia a {
+  color: #1d1505;
+  background: var(--alerta);
+  text-decoration: none;
+  padding: 1px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.emergencia a:hover { background: #ffdb94; }
+.emergencia b { font-weight: 700; }
+
+/* ---------- Escudo ---------- */
+.escudo { overflow: visible; }
+.escudo .contorno {
+  fill: rgba(125, 180, 255, 0.12);
+  stroke: var(--acento);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 0;
+}
+.escudo .marca {
+  fill: none;
+  stroke: var(--acento);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.pensando .escudo .contorno { animation: desenhar 1.9s ease-in-out infinite; }
+.pensando .escudo .marca { animation: pulsar 1.9s ease-in-out infinite; }
+@keyframes desenhar {
+  0% { stroke-dashoffset: 100; }
+  55% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -100; }
+}
+@keyframes pulsar {
+  0%, 100% { opacity: 0.25; }
+  55% { opacity: 1; }
+}
+
+/* ---------- Conversa ---------- */
+.chat {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-anchor: none;
+  overscroll-behavior: contain;
+  padding: var(--respiro-chat) 2px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  
+}
+
+.msg { display: flex; gap: 12px; max-width: 100%; }
+
+.msg.ia .avatar { flex: none; width: 28px; height: 28px; margin-top: 1px; }
+.msg.ia .corpo { min-width: 0; max-width: 64ch; overflow-wrap: anywhere; }
+.msg.ia .rotulo { color: var(--suave); font-size: 0.92rem; line-height: 28px; }
+
+.corpo > :last-child { margin-bottom: 0; }
+.corpo p { margin: 0 0 0.8em; }
+.corpo ul, .corpo ol { margin: 0 0 0.8em; padding-left: 1.4em; }
+.corpo li { margin: 0.3em 0; padding-left: 0.2em; }
+.corpo li::marker { color: var(--acento); font-weight: 600; }
+.corpo strong { font-weight: 650; color: #fff; }
+/* "Baseado em": de onde veio a resposta (trechos da base de conhecimento) */
+.fontes { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--linha); font-size: 0.8rem; line-height: 1.4; color: var(--suave); }
+.fontes-rotulo { margin-right: 2px; }
+.fontes-item { padding: 2px 10px; border: 1px solid var(--linha); border-radius: 999px; background: rgba(125, 180, 255, 0.06); overflow-wrap: anywhere; }
+.corpo code {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 0.9em;
+  background: #16233f;
+  padding: 0.1em 0.4em;
+  border-radius: 6px;
+}
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.05em;
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  background: var(--acento);
+  animation: piscar 0.9s steps(1) infinite;
+}
+@keyframes piscar { 50% { opacity: 0; } }
+
+.msg.eu { align-self: flex-end; max-width: 86%; flex-direction: column; align-items: flex-end; gap: 6px; }
+.balao {
+  background: var(--balao);
+  border: 1px solid var(--balao-borda);
+  border-radius: 18px 18px 6px 18px;
+  padding: 10px 14px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.balao p { margin: 0; }
+.miniatura { display: block; max-width: min(240px, 100%); max-height: 200px; border-radius: 10px; margin-bottom: 8px; }
+.arquivo-chip {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: rgba(125, 180, 255, 0.14);
+  font-size: 0.85rem;
+}
+
+/* O que a IA leu no print: a pessoa confere antes de confiar */
+.leitura { max-width: 100%; font-size: 0.86rem; color: var(--suave); text-align: left; }
+.leitura summary { cursor: pointer; }
+.leitura dl { display: grid; grid-template-columns: max-content 1fr; gap: 2px 12px; margin: 8px 0 0; }
+.leitura dt { color: var(--texto); }
+.leitura dd { margin: 0; overflow-wrap: anywhere; }
+
+/* ---------- Sugestões ---------- */
+.sugestoes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-left: 40px;
+}
+.sug {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  text-align: left;
+  background: transparent;
+  border: 1px solid var(--linha);
+  border-radius: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+  animation: entrar 0.4s ease both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+.sug b { font-weight: 600; }
+.sug span { color: var(--suave); font-size: 0.85rem; line-height: 1.35; }
+.sug:hover { border-color: var(--acento); background: rgba(125, 180, 255, 0.07); }
+@keyframes entrar {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------- Rodapé / campo de escrever ---------- */
+.rodape { padding: 6px 0 12px; }
+.erro { margin: 0 0 8px; padding: 8px 12px; border-radius: 10px; background: rgba(255, 155, 155, 0.1); border: 1px solid rgba(255, 155, 155, 0.35); color: var(--erro); font-size: 0.88rem; }
+
+.anexo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  padding: 6px 8px 6px 6px;
+  background: var(--superficie);
+  border: 1px solid var(--linha);
+  border-radius: 12px;
+}
+.anexo img { width: 44px; height: 44px; object-fit: cover; border-radius: 8px; flex: none; }
+.anexo .nome { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.9rem; }
+.anexo .nome small { display: block; color: var(--suave); font-size: 0.78rem; }
+.anexo button { flex: none; background: transparent; border: 0; color: var(--suave); cursor: pointer; font-size: 0.85rem; padding: 6px 8px; border-radius: 8px; }
+.anexo button:hover { color: var(--texto); background: #1a2947; }
+
+.compositor {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  background: var(--superficie);
+  border: 1px solid var(--linha);
+  border-radius: 18px;
+  padding: 6px;
+}
+.compositor:focus-within { border-color: var(--acento); }
+.compositor textarea {
+  flex: 1;
+  min-width: 0;
+  min-height: 40px;
+  max-height: 140px;
+  resize: none;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  padding: 8px 6px;
+  line-height: 1.45;
+}
+.compositor textarea::placeholder { color: #6f819f; }
+.icone, .enviar {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 13px;
+  cursor: pointer;
+}
+.icone { background: transparent; color: var(--suave); }
+.icone:hover:not(:disabled) { background: #1a2947; color: var(--texto); }
+.enviar { background: var(--acento); color: #0c1424; }
+.enviar:hover:not(:disabled) { background: #9cc5ff; }
+.icone:disabled, .enviar:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.aviso { margin: 8px 4px 0; font-size: 0.78rem; line-height: 1.45; color: var(--suave); }
+
+.so-pequeno { display: none; } /* só aparece no celular */
+
+/* ---------- Telas pequenas ---------- */
+@media (max-width: 560px) {
+  .app { padding: 0 12px; }
+  .marca-site p { display: none; }
+  .so-grande { display: none; }
+  .so-pequeno { display: inline; }
+  .emergencia { font-size: 0.82rem; padding: 7px 10px; }
+  .sugestoes { grid-template-columns: 1fr; margin-left: 0; gap: 6px; }
+  .sug { padding: 9px 12px; }
+  .sug span { display: none; } /* no celular, só o título: cabem todas as sugestões sem rolar tanto */
+  .msg.eu { max-width: 92%; }
+}
+
+/* ---------- Quem prefere menos movimento ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .pensando .escudo .contorno, .pensando .escudo .marca, .pensando .avanco, .cursor, .sug, .cartao-denuncia, .carregando-texto { animation: none; }
+  .avanco { transition: none; }
+}
+
+/* ---------- Botões do topo ---------- */
+.acoes-topo { display: flex; align-items: center; gap: 8px; flex: none; }
+.destaque {
+  flex: none;
+  background: var(--acento);
+  color: #0c1424;
+  border: 1px solid var(--acento);
+  border-radius: 10px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+.destaque:hover:not(:disabled) { background: #9cc5ff; border-color: #9cc5ff; }
+
+/* ---------- Botão enviar / parar / mostrar tudo ---------- */
+.enviar .i-parar, .enviar .i-pular { display: none; }
+.enviar[data-modo="parar"] .i-enviar, .enviar[data-modo="pular"] .i-enviar { display: none; }
+.enviar[data-modo="parar"] .i-parar { display: block; }
+.enviar[data-modo="pular"] .i-pular { display: block; }
+.enviar[data-modo="parar"] { background: var(--texto); }
+.enviar[data-modo="parar"]:hover { background: #fff; }
+.enviar[data-modo="pular"] { background: #1a2947; color: var(--acento); border: 1px solid var(--linha); }
+.enviar[data-modo="pular"]:hover { background: #22345a; }
+
+/* mensagem cancelada: fica apagada, a pessoa vê que não foi respondida */
+.msg.eu.cancelada .balao { opacity: 0.55; }
+
+/* ---------- Formulário de denúncia dentro do chat ---------- */
+.msg.cartao { display: block; animation: entrar 0.35s ease both; }
+.cartao-denuncia {
+  font-size: 1rem; /* base do formulário; "Letras maiores" muda só este valor */
+  background: var(--superficie);
+  border: 1px solid var(--balao-borda);
+  border-radius: 18px;
+  padding: 16px;
+  max-width: 100%;
+  overflow: clip;
+}
+.cartao-denuncia.cancelada { background: transparent; border-style: dashed; border-color: var(--linha); }
+.cartao-denuncia.enviada { border-color: rgba(125, 180, 255, 0.55); box-shadow: 0 0 0 4px rgba(125, 180, 255, 0.08); }
+
+.cartao-denuncia { scroll-margin-top: 6px; }
+.cd-topo {
+  position: sticky; /* o escudo acompanha quem está preenchendo, mesmo rolando o formulário */
+  top: calc(var(--respiro-chat) * -1); /* o sticky respeita o padding da área de rolagem, então compensamos */
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: -16px -16px 14px;
+  padding: 12px 16px 10px;
+  background: var(--superficie);
+  border-bottom: 1px solid var(--linha);
+}
+.cd-titulos { flex: 1; min-width: 0; }
+.cd-topo h2 { margin: 0; font-size: 1.05em; font-weight: 650; line-height: 1.25; }
+.cd-topo p { margin: 2px 0 0; font-size: 0.85em; color: var(--suave); line-height: 1.4; }
+
+/* Escudo que se preenche com o formulário */
+.escudo-progresso { flex: none; width: 56px; height: 56px; overflow: visible; }
+.escudo-progresso .trilho {
+  fill: rgba(125, 180, 255, 0.06);
+  stroke: var(--linha);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+}
+.escudo-progresso .avanco {
+  fill: none;
+  stroke: var(--acento);
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  transition: stroke-dashoffset 0.6s ease;
+}
+.escudo-progresso .marca {
+  fill: none;
+  stroke: var(--acento);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  transition: opacity 0.4s ease 0.3s;
+}
+.cartao-denuncia.enviada .escudo-progresso .trilho { fill: rgba(125, 180, 255, 0.16); }
+.cartao-denuncia.enviada .escudo-progresso .avanco { stroke-dashoffset: 0 !important; }
+.cartao-denuncia.enviada .escudo-progresso .marca { opacity: 1; }
+.escudo-progresso.pensando .avanco { animation: desenhar 1.9s ease-in-out infinite; }
+.escudo-progresso.pensando .marca { opacity: 0.4; }
+
+/* Pílulas: o que ajuda nas provas */
+.pilulas { list-style: none; margin: 0 0 14px; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.pilula {
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--linha);
+  color: var(--suave);
+  font-size: 0.8em;
+  line-height: 1.5;
+  transition: background 0.25s, color 0.25s, border-color 0.25s;
+}
+.pilula::before { content: "○ "; }
+.pilula.ok { background: rgba(125, 180, 255, 0.16); border-color: rgba(125, 180, 255, 0.6); color: #fff; }
+.pilula.ok::before { content: "✓ "; color: var(--acento); }
+
+.cd-form { display: flex; flex-direction: column; gap: 14px; }
+.campo { display: flex; flex-direction: column; gap: 6px; }
+.campo > span { font-weight: 600; font-size: 0.92em; }
+.campo .dica { color: var(--suave); font-size: 0.82em; margin-top: -4px; }
+.campo .contador { align-self: flex-end; color: var(--suave); font-size: 0.75em; }
+.cd-form textarea, .cd-form select, .cd-form input[type="text"] {
+  width: 100%;
+  min-width: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  border: 1px solid var(--linha);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 0.95em;
+}
+.cd-form textarea { resize: vertical; min-height: 96px; line-height: 1.5; }
+.cd-form textarea::placeholder, .cd-form input::placeholder { color: #6f819f; }
+.cd-form textarea:focus, .cd-form select:focus, .cd-form input[type="text"]:focus { outline: 0; border-color: var(--acento); }
+.cd-form :disabled { opacity: 0.55; cursor: not-allowed; }
+
+.provas { display: flex; flex-direction: column; gap: 12px; }
+.prova-bloco { display: flex; flex-direction: column; gap: 4px; }
+.prova { display: grid; grid-template-columns: minmax(130px, 180px) minmax(0, 1fr) 36px; gap: 8px; align-items: center; }
+.remover {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--linha);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--suave);
+  font-size: 1.2em;
+  line-height: 1;
+  cursor: pointer;
+}
+.remover:hover:not(:disabled) { color: var(--erro); border-color: var(--erro); }
+.adicionar {
+  align-self: flex-start;
+  background: transparent;
+  border: 1px dashed var(--balao-borda);
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: 0.85em;
+  color: var(--acento);
+  cursor: pointer;
+}
+.adicionar:hover:not(:disabled) { background: rgba(125, 180, 255, 0.08); }
+
+/* Passos numerados: cada parte do formulário é um cartão com título */
+.passo { display: flex; flex-direction: column; gap: 10px; padding: 14px; border: 1px solid var(--linha); border-radius: 14px; background: rgba(255, 255, 255, 0.015); }
+.passo-titulo { margin: 0; font-size: 1.02em; font-weight: 650; line-height: 1.35; color: #fff; }
+.passo > .dica { margin: -4px 0 0; color: var(--suave); font-size: 0.85em; line-height: 1.5; }
+
+/* Botão "?" que abre a explicação logo abaixo do campo */
+.ajuda-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.ajuda-botao {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  padding: 4px 2px;
+  background: transparent;
+  border: 0;
+  color: var(--acento);
+  font: inherit;
+  font-size: 0.88em;
+  line-height: 1.35;
+  text-align: left;
+  cursor: pointer;
+}
+.ajuda-botao > span:last-child { text-decoration: underline; text-decoration-color: rgba(125, 180, 255, 0.4); text-underline-offset: 3px; }
+.ajuda-botao:hover > span:last-child { text-decoration-color: currentColor; }
+.icone-ajuda {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 1.6em;
+  height: 1.6em;
+  border: 1.5px solid var(--acento);
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 0.9em;
+  line-height: 1;
+}
+.ajuda-botao[aria-expanded="true"] .icone-ajuda { background: var(--acento); color: #0c1424; }
+.ajuda-painel { width: 100%; padding: 12px 14px; border-radius: 12px; background: rgba(125, 180, 255, 0.07); border: 1px solid rgba(125, 180, 255, 0.28); color: var(--texto); font-size: 0.9em; line-height: 1.55; }
+.ajuda-painel[hidden], .marcar[hidden] { display: none; }
+.ajuda-item h4 { margin: 0 0 6px; font-size: 1em; font-weight: 650; }
+.ajuda-item p { margin: 0 0 8px; overflow-wrap: anywhere; }
+.ajuda-item p:last-child { margin-bottom: 0; }
+.ajuda-item ol { margin: 0 0 8px; padding-left: 1.4em; }
+.ajuda-item li { margin-bottom: 4px; overflow-wrap: anywhere; }
+.ajuda-item + .ajuda-item { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--linha); }
+
+/* Prints enviados no chat: só o "código" (hash) é guardado */
+.prints-bloco { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border: 1px dashed var(--balao-borda); border-radius: 12px; }
+.prints-bloco.com-prints { border-style: solid; border-color: rgba(125, 180, 255, 0.45); background: rgba(125, 180, 255, 0.05); }
+.prints-bloco h4 { margin: 0; font-size: 0.95em; font-weight: 650; }
+.prints-texto { margin: 0; color: var(--suave); font-size: 0.88em; line-height: 1.5; }
+.marcar { display: flex; align-items: flex-start; gap: 10px; font-size: 0.92em; line-height: 1.45; cursor: pointer; }
+.marcar input { flex: none; width: 1.25em; height: 1.25em; margin: 0.1em 0 0; accent-color: var(--acento); }
+
+/* "Ainda tem dúvidas?": fica depois do botão Enviar e só traz o que não aparece no "?" de um campo */
+.duvidas { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; padding-top: 14px; border-top: 1px solid var(--linha); }
+.duvidas .passo-titulo { margin-bottom: 2px; }
+details.duvida { border: 1px solid var(--linha); border-radius: 12px; background: rgba(255, 255, 255, 0.015); }
+details.duvida summary { display: flex; align-items: center; gap: 10px; padding: 10px 14px; font-size: 0.92em; line-height: 1.4; cursor: pointer; list-style: none; }
+details.duvida summary::-webkit-details-marker { display: none; }
+details.duvida summary::before { content: "+"; flex: none; width: 1em; text-align: center; color: var(--acento); font-weight: 700; }
+details.duvida[open] summary { color: #fff; font-weight: 600; }
+details.duvida[open] summary::before { content: "−"; }
+details.duvida p { margin: 0 14px 10px 38px; color: var(--suave); font-size: 0.9em; line-height: 1.55; overflow-wrap: anywhere; }
+details.duvida p:last-child { margin-bottom: 12px; }
+
+/* Botão "Letras maiores" e o modo de letras grandes */
+.letras {
+  flex: none;
+  align-self: flex-start;
+  padding: 4px 12px;
+  background: transparent;
+  border: 1px solid var(--balao-borda);
+  border-radius: 999px;
+  color: var(--acento);
+  font: inherit;
+  font-size: 0.82em;
+  line-height: 1.4;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.letras:hover { background: rgba(125, 180, 255, 0.1); }
+.letras[aria-pressed="true"] { background: rgba(125, 180, 255, 0.18); border-color: var(--acento); color: #fff; }
+.cartao-denuncia.letras-grandes { font-size: 1.25rem; }
+.cartao-denuncia.letras-grandes .prova { grid-template-columns: minmax(190px, 240px) minmax(0, 1fr) 46px; }
+.cartao-denuncia.letras-grandes .remover { width: 46px; height: 46px; }
+.cartao-denuncia.letras-grandes .escudo-progresso { width: 62px; height: 62px; }
+.cartao-denuncia.letras-grandes .cd-form textarea { min-height: 130px; }
+
+.cd-erro { margin: 0; padding: 8px 12px; border-radius: 10px; background: rgba(255, 155, 155, 0.1); border: 1px solid rgba(255, 155, 155, 0.35); color: var(--erro); font-size: 0.88em; }
+.cd-acoes { display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+.cd-acoes .fantasma, .cd-acoes .primario { padding: 9px 16px; font-size: 0.92em; border-radius: 12px; }
+.primario {
+  background: var(--acento);
+  color: #0c1424;
+  border: 1px solid var(--acento);
+  font-weight: 650;
+  cursor: pointer;
+}
+.primario:hover:not(:disabled) { background: #9cc5ff; }
+
+/* Resultado: protocolo e código */
+.aviso-codigo { margin: 0 0 12px; padding: 10px 12px; border-radius: 12px; background: rgba(255, 207, 112, 0.09); border: 1px solid rgba(255, 207, 112, 0.3); color: #ffe3a8; font-size: 0.9em; }
+.dado { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 8px 0; border-top: 1px solid var(--linha); }
+.rotulo-dado { flex: none; width: 110px; color: var(--suave); font-size: 0.85em; }
+.dado code { flex: 1; min-width: 0; overflow-wrap: anywhere; font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: 1.02em; color: #fff; background: #16233f; padding: 4px 10px; border-radius: 8px; }
+.nota { margin: 12px 0 0; font-size: 0.86em; color: var(--suave); }
+.cartao-denuncia.cancelada .nota { margin: 0; }
+
+/* ---------- Janela de "tem certeza?" ---------- */
+.dialogo {
+  width: min(420px, calc(100vw - 32px));
+  background: var(--superficie);
+  color: var(--texto);
+  border: 1px solid var(--balao-borda);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+}
+.dialogo::backdrop { background: rgba(5, 9, 18, 0.7); backdrop-filter: blur(2px); }
+.dialogo h2 { margin: 0 0 8px; font-size: 1.1rem; font-weight: 650; }
+.dialogo p { margin: 0; color: var(--suave); font-size: 0.95rem; white-space: pre-line; }
+.conf-botoes { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
+.conf-botoes button { padding: 9px 16px; border-radius: 12px; font-size: 0.92rem; cursor: pointer; }
+.perigo { background: #ff8a8a; color: #2a0a0a; border: 1px solid #ff8a8a; font-weight: 650; }
+.perigo:hover { background: #ffa3a3; }
+
+/* ---------- Formulário em telas pequenas ---------- */
+@media (max-width: 560px) {
+  .acoes-topo { gap: 6px; }
+  .destaque, .fantasma { padding: 6px 10px; }
+  .cartao-denuncia { padding: 14px 12px; border-radius: 16px; }
+  .cd-topo { margin: -14px -12px 12px; padding: 10px 12px 8px; gap: 12px; }
+  .cd-topo p { display: none; }
+  .cd-topo { align-items: center; }
+  .letras { padding: 4px 10px; }
+  .passo { padding: 12px 10px; }
+  .prints-bloco { padding: 10px; }
+  details.duvida summary { padding: 10px 12px; }
+  details.duvida p { margin: 0 12px 10px 12px; }
+  .provas { gap: 14px; }
+  .prova { gap: 6px 6px; }
+  .escudo-progresso { width: 46px; height: 46px; }
+  .prova { grid-template-columns: minmax(0, 1fr) 36px; }
+  .prova select { grid-column: 1 / -1; }
+  .prova input { grid-column: 1; }
+  .prova .remover { grid-column: 2; }
+  .cartao-denuncia.letras-grandes .prova { grid-template-columns: minmax(0, 1fr) 46px; }
+  .rotulo-dado { width: 100%; }
+  .cd-acoes > * { flex: 1; }
+}
+
+/* Campo-isca anti-robô: escondido de quem usa o site */
+.isca { position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
+/* ---------- Carregando antes do formulário ---------- */
+.carregando-form {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 18px;
+  background: var(--superficie);
+  border: 1px dashed var(--balao-borda);
+  border-radius: 18px;
+}
+.carregando-form .escudo { width: 52px; height: 52px; flex: none; display: block; }
+.carregando-texto { margin: 0; color: var(--suave); animation: aparecer 0.4s ease both; }
+@keyframes aparecer { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+.cartao-denuncia { animation: entrar 0.45s ease both; }

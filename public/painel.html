@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Painel do analista | Rede Escudo</title>
+  <link rel="stylesheet" href="painel.css">
+</head>
+<body>
+  <div class="painel">
+    <header class="topo">
+      <div class="marca-site">
+        <svg class="escudo" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path class="contorno" d="M12 2.5 4.5 5.4v5.8c0 4.6 3.1 8.1 7.5 10.3 4.4-2.2 7.5-5.7 7.5-10.3V5.4L12 2.5Z"/>
+          <path class="marca" d="m8.6 12.2 2.4 2.4 4.4-4.8"/>
+        </svg>
+        <div>
+          <h1>Painel do analista</h1>
+          <p>Rede Escudo. O que ler primeiro, em ordem de prioridade.</p>
+        </div>
+      </div>
+      <div class="acoes-topo">
+        <span id="atualizado" class="atualizado" role="status"></span>
+        <button id="atualizar" class="botao" type="button">Atualizar</button>
+        <button id="como-funciona" class="botao fantasma" type="button">Como a fila funciona</button>
+      </div>
+    </header>
+
+    <section class="resumo" aria-label="Resumo da fila">
+      <div class="cartao-resumo"><b id="r-abertas">–</b><span>Abertas na fila</span></div>
+      <div class="cartao-resumo critica"><b id="r-criticas">–</b><span>Críticas</span></div>
+      <div class="cartao-resumo"><b id="r-espera">–</b><span>Sem resposta há mais de 24 h</span></div>
+      <div class="cartao-resumo"><b id="r-quarentena">–</b><span>Na quarentena</span></div>
+    </section>
+
+    <div id="aviso" class="aviso" role="status" hidden></div>
+
+    <div class="abas" role="tablist" aria-label="Filas">
+      <button id="aba-fila" class="aba" role="tab" type="button" aria-selected="true" aria-controls="painel-lista">Fila principal <span id="n-fila" class="contagem">0</span></button>
+      <button id="aba-quarentena" class="aba" role="tab" type="button" aria-selected="false" aria-controls="painel-lista" tabindex="-1">Quarentena <span id="n-quarentena" class="contagem">0</span></button>
+    </div>
+
+    <div class="filtros">
+      <label class="filtro">
+        <span>Status</span>
+        <select id="f-status">
+          <option value="abertas">Abertas</option>
+          <option value="todas">Todas</option>
+          <option value="recebida">Recebidas</option>
+          <option value="em_analise">Em análise</option>
+          <option value="encaminhada">Encaminhadas</option>
+          <option value="encerrada">Encerradas</option>
+        </select>
+      </label>
+      <label class="filtro">
+        <span>Ordem</span>
+        <select id="f-ordem"></select>
+      </label>
+      <label class="filtro busca">
+        <span>Buscar</span>
+        <input id="f-busca" type="search" placeholder="Protocolo, plataforma ou palavra do resumo" autocomplete="off" maxlength="80">
+      </label>
+    </div>
+
+    <p id="nota-quarentena" class="nota-quarentena" hidden>Estas denúncias parecem spam, trote ou robô. <b>Nada foi apagado.</b> Se for uma vítima de verdade, abra e clique em <b>Liberar</b>: ela volta para a fila principal.</p>
+
+    <div id="painel-lista" role="tabpanel" aria-labelledby="aba-fila">
+      <ul id="lista" class="lista"></ul>
+      <p id="vazio" class="vazio" hidden></p>
+    </div>
+    <p id="rodape-lista" class="rodape-lista"></p>
+  </div>
+
+  <div id="aviso-rapido" class="aviso-rapido" role="status" aria-live="polite" hidden></div>
+
+  <!-- Detalhe de uma denúncia (janela lateral) -->
+  <dialog id="detalhe" class="detalhe" aria-labelledby="det-titulo">
+    <div class="det">
+      <header class="det-topo">
+        <div class="det-titulos">
+          <p id="det-sobre" class="det-sobre"></p>
+          <h2 id="det-titulo"></h2>
+          <p id="det-meta" class="det-meta"></p>
+        </div>
+        <button id="det-fechar" class="botao fantasma" type="button">Fechar</button>
+      </header>
+      <div id="det-corpo" class="det-corpo"></div>
+      <footer id="det-acoes" class="det-acoes"></footer>
+    </div>
+  </dialog>
+
+  <!-- Como a fila funciona -->
+  <dialog id="ajuda" class="dialogo larga" aria-labelledby="aj-titulo">
+    <h2 id="aj-titulo">Como a fila funciona</h2>
+    <div class="aj-corpo">
+      <p><b>Prioridade (0 a 100):</b> diz o que ler primeiro. Ela é calculada pelo código, não pela IA. Soma a urgência, a categoria, as provas informadas e o tamanho do relato. Risco de vida nunca fica abaixo de 90. Sinais de spam diminuem a nota.</p>
+      <ul class="faixas">
+        <li><span class="selo faixa-critica">Crítica</span> 85 ou mais</li>
+        <li><span class="selo faixa-alta">Alta</span> de 60 a 84</li>
+        <li><span class="selo faixa-media">Média</span> de 35 a 59</li>
+        <li><span class="selo faixa-baixa">Baixa</span> abaixo de 35</li>
+      </ul>
+      <p><b>Filtro de status:</b> <i>Abertas</i> mostra as denúncias recebidas e em análise. As encaminhadas e encerradas saem da fila até você escolher <i>Todas</i> ou o status delas.</p>
+      <p><b>A IA só sugere.</b> Ela opina sobre categoria, urgência e se parece trote. Quem muda o banco é você: status, quarentena e liberação são sempre ações suas.</p>
+      <p><b>Quarentena:</b> quem parece spam, robô ou trote vai para a aba Quarentena. Nada é apagado. <b>Risco de vida nunca vai para a quarentena.</b> Ao liberar, a denúncia volta para a fila principal e recupera os pontos que a suspeita tirou.</p>
+      <p><b>Códigos dos prints (SHA-256):</b> a imagem não é guardada, só o código. Para conferir um arquivo entregue pela vítima, no Windows: <code>Get-FileHash arquivo.png -Algorithm SHA256</code>. Se o código for igual ao <i>arquivo original</i>, o arquivo não foi alterado.</p>
+      <p><b>Links das provas</b> aparecem só como texto, de propósito: não abra links de uma denúncia sem cuidado.</p>
+    </div>
+    <div class="conf-botoes"><button id="aj-fechar" class="botao" type="button" autofocus>Entendi</button></div>
+  </dialog>
+
+  <!-- "Tem certeza?" -->
+  <dialog id="confirmar" class="dialogo" aria-labelledby="conf-titulo">
+    <form method="dialog">
+      <h2 id="conf-titulo"></h2>
+      <p id="conf-texto"></p>
+      <div class="conf-botoes">
+        <button id="conf-voltar" class="botao fantasma" value="nao" autofocus></button>
+        <button id="conf-ok" class="botao perigo" value="sim"></button>
+      </div>
+    </form>
+  </dialog>
+
+  <script type="module" src="painel.js"></script>
+</body>
+</html>
