@@ -1,106 +1,167 @@
-/* Rede Escudo: tela de conversa.
-   Ideia visual: quem responde é um escudo. Ele "se desenha" enquanto pensa, e a resposta aparece
-   como uma carta aberta (sem balão), para listas e passos terem espaço. Só a pessoa tem balão. */
+/* Rede Escudo — conversa com visual idêntico ao Zagatec (tema claro) */
 
 :root {
-  color-scheme: dark;
-  --fundo: #0c1424;
-  --superficie: #111c31;
-  --linha: #223250;
-  --texto: #e9eef7;
-  --suave: #93a4c0;
-  --acento: #7db4ff;
-  --balao: #1a2b4b;
-  --balao-borda: #2b4272;
-  --alerta: #ffcf70;
-  --erro: #ff9b9b;
-  --respiro-chat: 22px; /* espaço no topo da conversa (o cabeçalho fixo do formulário compensa) */
-  --fonte: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --noite: #0f172a;
+  --petroleo: #1e293b;
+  --verde: #2f6f5e;
+  --verde-escuro: #245a4c;
+  --verde-claro: #e8f5ef;
+  --verde-destaque: #7ec8a8;
+  --fundo: #f4f6f8;
+  --fundo-suave: #eef1f4;
+  --linha: #e2e8f0;
+  --texto: #1e293b;
+  --texto-suave: #64748b;
+  --texto-fraco: #94a3b8;
+  --foco: #1B66C9;
+  --branco: #ffffff;
+  --erro: #b91c1c;
+  --alerta: #d97706;
+  --acento: #2f6f5e;
+  --balao: #e8f5ef;
+  --balao-borda: #b7d9c9;
+  --superficie: #ffffff;
+  --respiro-chat: 18px;
+  --fonte: 'Figtree', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --raio-p: 999px;
+  --raio-m: 1.25rem;
+  --raio-s: 0.75rem;
 }
 
-* { box-sizing: border-box; }
+*, *::before, *::after { box-sizing: border-box; }
 [hidden] { display: none !important; }
 
 html, body { height: 100%; }
 body {
   margin: 0;
-  background:
-    radial-gradient(900px 480px at 50% -120px, #172a57 0%, transparent 70%),
-    var(--fundo);
+  background: var(--fundo);
   color: var(--texto);
   font: 16px/1.6 var(--fonte);
   -webkit-font-smoothing: antialiased;
 }
 
-a { color: var(--acento); }
+a { color: var(--petroleo); }
 button, textarea { font: inherit; color: inherit; }
-:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+:focus-visible { outline: 3px solid var(--foco); outline-offset: 2px; }
 
 .app {
   height: 100vh;
   height: 100dvh;
-  max-width: 760px;
+  max-width: 820px;
   margin: 0 auto;
   padding: 0 16px;
   display: flex;
   flex-direction: column;
+  background: var(--fundo);
 }
 
-/* ---------- Topo ---------- */
+/* ---------- Cabeçalho estilo Zagatec ---------- */
 .topo {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 14px 0 10px;
+  padding: 12px 0 10px;
+  border-bottom: 1px solid var(--linha);
+  background: rgb(255 255 255 / 95%);
+  margin: 0 -16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(10px);
 }
 .marca-site { display: flex; align-items: center; gap: 12px; min-width: 0; }
-.marca-site h1 { margin: 0; font-size: 1.15rem; font-weight: 650; letter-spacing: -0.01em; line-height: 1.2; }
-.marca-site p { margin: 2px 0 0; font-size: 0.82rem; color: var(--suave); line-height: 1.3; }
-.logo .escudo { width: 36px; height: 36px; display: block; }
+.marca-site h1 { margin: 0; font-size: 1.1rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; color: var(--noite); }
+.marca-site p { margin: 2px 0 0; font-size: 0.8rem; color: var(--texto-suave); line-height: 1.3; }
+.logo .escudo { width: 34px; height: 34px; display: block; }
+
+.acoes-topo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
 
 .fantasma {
   flex: none;
   background: transparent;
-  border: 1px solid var(--linha);
-  border-radius: 10px;
-  padding: 6px 12px;
+  border: 1.5px solid var(--linha);
+  border-radius: var(--raio-p);
+  padding: 6px 14px;
   font-size: 0.85rem;
-  color: var(--suave);
+  font-weight: 600;
+  color: var(--texto-suave);
   cursor: pointer;
+  text-decoration: none;
 }
-.fantasma:hover:not(:disabled) { color: var(--texto); border-color: var(--suave); }
+.fantasma:hover:not(:disabled) { color: var(--noite); border-color: var(--texto-suave); background: var(--fundo-suave); }
 .fantasma:disabled { opacity: 0.4; cursor: not-allowed; }
 
+.destaque {
+  flex: none;
+  background: var(--verde);
+  border: 0;
+  border-radius: var(--raio-p);
+  padding: 7px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 1px 2px rgb(47 111 94 / 25%);
+}
+.destaque:hover:not(:disabled) { background: var(--verde-escuro); }
+.destaque:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  background: var(--verde-claro);
+  border: 1.5px solid transparent;
+  border-radius: var(--raio-p);
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--verde-escuro);
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn-voltar:hover { background: #d4eddf; color: var(--noite); }
+
+/* Emergência */
 .emergencia {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 6px 8px;
-  margin: 0;
+  margin: 10px 0 0;
   padding: 8px 12px;
   border-radius: 12px;
-  background: rgba(255, 207, 112, 0.08);
-  border: 1px solid rgba(255, 207, 112, 0.26);
-  color: #ffe3a8;
+  background: #14303a;
+  border: none;
+  color: #d7e4e8;
   font-size: 0.86rem;
 }
 .emergencia a {
   color: #1d1505;
-  background: var(--alerta);
+  background: #ffcf70;
   text-decoration: none;
-  padding: 1px 10px;
+  padding: 2px 10px;
   border-radius: 999px;
   white-space: nowrap;
+  font-weight: 600;
 }
 .emergencia a:hover { background: #ffdb94; }
 .emergencia b { font-weight: 700; }
 
-/* ---------- Escudo ---------- */
+/* ---------- Escudo (adaptado ao verde Zagatec) ---------- */
 .escudo { overflow: visible; }
 .escudo .contorno {
-  fill: rgba(125, 180, 255, 0.12);
-  stroke: var(--acento);
+  fill: rgba(47, 111, 94, 0.12);
+  stroke: var(--verde);
   stroke-width: 1.6;
   stroke-linejoin: round;
   stroke-dasharray: 100;
@@ -108,7 +169,7 @@ button, textarea { font: inherit; color: inherit; }
 }
 .escudo .marca {
   fill: none;
-  stroke: var(--acento);
+  stroke: var(--verde);
   stroke-width: 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -136,29 +197,38 @@ button, textarea { font: inherit; color: inherit; }
   display: flex;
   flex-direction: column;
   gap: 22px;
-  
 }
 
 .msg { display: flex; gap: 12px; max-width: 100%; }
 
 .msg.ia .avatar { flex: none; width: 28px; height: 28px; margin-top: 1px; }
 .msg.ia .corpo { min-width: 0; max-width: 64ch; overflow-wrap: anywhere; }
-.msg.ia .rotulo { color: var(--suave); font-size: 0.92rem; line-height: 28px; }
+.msg.ia .rotulo { color: var(--texto-suave); font-size: 0.92rem; line-height: 28px; font-weight: 600; }
 
 .corpo > :last-child { margin-bottom: 0; }
 .corpo p { margin: 0 0 0.8em; }
 .corpo ul, .corpo ol { margin: 0 0 0.8em; padding-left: 1.4em; }
 .corpo li { margin: 0.3em 0; padding-left: 0.2em; }
-.corpo li::marker { color: var(--acento); font-weight: 600; }
-.corpo strong { font-weight: 650; color: #fff; }
-/* "Baseado em": de onde veio a resposta (trechos da base de conhecimento) */
-.fontes { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--linha); font-size: 0.8rem; line-height: 1.4; color: var(--suave); }
+.corpo li::marker { color: var(--verde); font-weight: 600; }
+.corpo strong { font-weight: 650; color: var(--noite); }
+
+.fontes {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px;
+  margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--linha);
+  font-size: 0.8rem; line-height: 1.4; color: var(--texto-suave);
+}
 .fontes-rotulo { margin-right: 2px; }
-.fontes-item { padding: 2px 10px; border: 1px solid var(--linha); border-radius: 999px; background: rgba(125, 180, 255, 0.06); overflow-wrap: anywhere; }
+.fontes-item {
+  padding: 2px 10px;
+  border: 1px solid var(--linha);
+  border-radius: 999px;
+  background: var(--verde-claro);
+  overflow-wrap: anywhere;
+}
 .corpo code {
   font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
   font-size: 0.9em;
-  background: #16233f;
+  background: var(--fundo-suave);
   padding: 0.1em 0.4em;
   border-radius: 6px;
 }
@@ -168,7 +238,7 @@ button, textarea { font: inherit; color: inherit; }
   height: 1.05em;
   margin-left: 1px;
   vertical-align: text-bottom;
-  background: var(--acento);
+  background: var(--verde);
   animation: piscar 0.9s steps(1) infinite;
 }
 @keyframes piscar { 50% { opacity: 0; } }
@@ -181,6 +251,7 @@ button, textarea { font: inherit; color: inherit; }
   padding: 10px 14px;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+  color: var(--noite);
 }
 .balao p { margin: 0; }
 .miniatura { display: block; max-width: min(240px, 100%); max-height: 200px; border-radius: 10px; margin-bottom: 8px; }
@@ -189,18 +260,18 @@ button, textarea { font: inherit; color: inherit; }
   margin-bottom: 8px;
   padding: 2px 10px;
   border-radius: 999px;
-  background: rgba(125, 180, 255, 0.14);
+  background: var(--verde-claro);
   font-size: 0.85rem;
+  color: var(--verde-escuro);
 }
 
-/* O que a IA leu no print: a pessoa confere antes de confiar */
-.leitura { max-width: 100%; font-size: 0.86rem; color: var(--suave); text-align: left; }
+.leitura { max-width: 100%; font-size: 0.86rem; color: var(--texto-suave); text-align: left; }
 .leitura summary { cursor: pointer; }
 .leitura dl { display: grid; grid-template-columns: max-content 1fr; gap: 2px 12px; margin: 8px 0 0; }
 .leitura dt { color: var(--texto); }
 .leitura dd { margin: 0; overflow-wrap: anywhere; }
 
-/* ---------- Sugestões ---------- */
+/* Sugestões */
 .sugestoes {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -212,25 +283,34 @@ button, textarea { font: inherit; color: inherit; }
   flex-direction: column;
   gap: 1px;
   text-align: left;
-  background: transparent;
+  background: #fff;
   border: 1px solid var(--linha);
   border-radius: 12px;
   padding: 10px 12px;
   cursor: pointer;
   animation: entrar 0.4s ease both;
   animation-delay: calc(var(--i, 0) * 70ms);
+  box-shadow: 0 1px 2px rgb(15 23 42 / 4%);
 }
-.sug b { font-weight: 600; }
-.sug span { color: var(--suave); font-size: 0.85rem; line-height: 1.35; }
-.sug:hover { border-color: var(--acento); background: rgba(125, 180, 255, 0.07); }
+.sug b { font-weight: 600; color: var(--noite); }
+.sug span { color: var(--texto-suave); font-size: 0.85rem; line-height: 1.35; }
+.sug:hover { border-color: var(--verde); background: var(--verde-claro); }
 @keyframes entrar {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: none; }
 }
 
-/* ---------- Rodapé / campo de escrever ---------- */
-.rodape { padding: 6px 0 12px; }
-.erro { margin: 0 0 8px; padding: 8px 12px; border-radius: 10px; background: rgba(255, 155, 155, 0.1); border: 1px solid rgba(255, 155, 155, 0.35); color: var(--erro); font-size: 0.88rem; }
+/* Rodapé / compositor */
+.rodape { padding: 6px 0 14px; }
+.erro {
+  margin: 0 0 8px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: var(--erro);
+  font-size: 0.88rem;
+}
 
 .anexo {
   display: flex;
@@ -238,26 +318,31 @@ button, textarea { font: inherit; color: inherit; }
   gap: 10px;
   margin-bottom: 8px;
   padding: 6px 8px 6px 6px;
-  background: var(--superficie);
+  background: #fff;
   border: 1px solid var(--linha);
   border-radius: 12px;
 }
 .anexo img { width: 44px; height: 44px; object-fit: cover; border-radius: 8px; flex: none; }
 .anexo .nome { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.9rem; }
-.anexo .nome small { display: block; color: var(--suave); font-size: 0.78rem; }
-.anexo button { flex: none; background: transparent; border: 0; color: var(--suave); cursor: pointer; font-size: 0.85rem; padding: 6px 8px; border-radius: 8px; }
-.anexo button:hover { color: var(--texto); background: #1a2947; }
+.anexo .nome small { display: block; color: var(--texto-suave); font-size: 0.78rem; }
+.anexo button {
+  flex: none; background: transparent; border: 0;
+  color: var(--texto-suave); cursor: pointer; font-size: 0.85rem;
+  padding: 6px 8px; border-radius: 8px;
+}
+.anexo button:hover { color: var(--texto); background: var(--fundo-suave); }
 
 .compositor {
   display: flex;
   align-items: flex-end;
   gap: 6px;
-  background: var(--superficie);
-  border: 1px solid var(--linha);
+  background: #fff;
+  border: 1.5px solid var(--linha);
   border-radius: 18px;
   padding: 6px;
+  box-shadow: 0 1px 3px rgb(15 23 42 / 6%);
 }
-.compositor:focus-within { border-color: var(--acento); }
+.compositor:focus-within { border-color: var(--verde); }
 .compositor textarea {
   flex: 1;
   min-width: 0;
@@ -269,8 +354,10 @@ button, textarea { font: inherit; color: inherit; }
   outline: 0;
   padding: 8px 6px;
   line-height: 1.45;
+  color: var(--texto);
 }
-.compositor textarea::placeholder { color: #6f819f; }
+.compositor textarea::placeholder { color: var(--texto-fraco); }
+
 .icone, .enviar {
   flex: none;
   width: 40px;
@@ -281,105 +368,85 @@ button, textarea { font: inherit; color: inherit; }
   border-radius: 13px;
   cursor: pointer;
 }
-.icone { background: transparent; color: var(--suave); }
-.icone:hover:not(:disabled) { background: #1a2947; color: var(--texto); }
-.enviar { background: var(--acento); color: #0c1424; }
-.enviar:hover:not(:disabled) { background: #9cc5ff; }
+.icone { background: transparent; color: var(--texto-suave); }
+.icone:hover:not(:disabled) { background: var(--fundo-suave); color: var(--noite); }
+.enviar { background: var(--verde); color: #fff; }
+.enviar:hover:not(:disabled) { background: var(--verde-escuro); }
 .icone:disabled, .enviar:disabled { opacity: 0.4; cursor: not-allowed; }
 
-.aviso { margin: 8px 4px 0; font-size: 0.78rem; line-height: 1.45; color: var(--suave); }
+.aviso { margin: 8px 4px 0; font-size: 0.78rem; line-height: 1.45; color: var(--texto-fraco); }
+.aviso a { color: var(--verde-escuro); font-weight: 600; }
 
-.so-pequeno { display: none; } /* só aparece no celular */
+.so-pequeno { display: none; }
 
-/* ---------- Telas pequenas ---------- */
-@media (max-width: 560px) {
-  .app { padding: 0 12px; }
-  .marca-site p { display: none; }
-  .so-grande { display: none; }
-  .so-pequeno { display: inline; }
-  .emergencia { font-size: 0.82rem; padding: 7px 10px; }
-  .sugestoes { grid-template-columns: 1fr; margin-left: 0; gap: 6px; }
-  .sug { padding: 9px 12px; }
-  .sug span { display: none; } /* no celular, só o título: cabem todas as sugestões sem rolar tanto */
-  .msg.eu { max-width: 92%; }
+/* Diálogo de confirmação */
+.dialogo {
+  border: 1px solid var(--linha);
+  border-radius: 16px;
+  padding: 0;
+  max-width: 400px;
+  width: calc(100% - 32px);
+  box-shadow: 0 16px 48px rgb(15 23 42 / 18%);
+  background: #fff;
+  color: var(--texto);
 }
-
-/* ---------- Quem prefere menos movimento ---------- */
-@media (prefers-reduced-motion: reduce) {
-  .pensando .escudo .contorno, .pensando .escudo .marca, .pensando .avanco, .cursor, .sug, .cartao-denuncia, .carregando-texto { animation: none; }
-  .avanco { transition: none; }
-}
-
-/* ---------- Botões do topo ---------- */
-.acoes-topo { display: flex; align-items: center; gap: 8px; flex: none; }
-.destaque {
-  flex: none;
-  background: var(--acento);
-  color: #0c1424;
-  border: 1px solid var(--acento);
-  border-radius: 10px;
-  padding: 6px 14px;
-  font-size: 0.85rem;
-  font-weight: 650;
+.dialogo::backdrop { background: rgb(15 23 42 / 45%); }
+.dialogo form { padding: 1.5rem; }
+.dialogo h2 { margin: 0 0 .5rem; font-size: 1.15rem; color: var(--noite); }
+.dialogo p { margin: 0 0 1.25rem; color: var(--texto-suave); font-size: .95rem; }
+.conf-botoes { display: flex; justify-content: flex-end; gap: .6rem; }
+.conf-botoes .fantasma { padding: .55rem 1.1rem; }
+.conf-botoes .perigo {
+  background: #dc2626;
+  color: #fff;
+  border: 0;
+  border-radius: var(--raio-p);
+  padding: .55rem 1.1rem;
+  font-weight: 600;
   cursor: pointer;
 }
-.destaque:hover:not(:disabled) { background: #9cc5ff; border-color: #9cc5ff; }
+.conf-botoes .perigo:hover { background: #b91c1c; }
 
-/* ---------- Botão enviar / parar / mostrar tudo ---------- */
-.enviar .i-parar, .enviar .i-pular { display: none; }
-.enviar[data-modo="parar"] .i-enviar, .enviar[data-modo="pular"] .i-enviar { display: none; }
-.enviar[data-modo="parar"] .i-parar { display: block; }
-.enviar[data-modo="pular"] .i-pular { display: block; }
-.enviar[data-modo="parar"] { background: var(--texto); }
-.enviar[data-modo="parar"]:hover { background: #fff; }
-.enviar[data-modo="pular"] { background: #1a2947; color: var(--acento); border: 1px solid var(--linha); }
-.enviar[data-modo="pular"]:hover { background: #22345a; }
-
-/* mensagem cancelada: fica apagada, a pessoa vê que não foi respondida */
-.msg.eu.cancelada .balao { opacity: 0.55; }
-
-/* ---------- Formulário de denúncia dentro do chat ---------- */
-.msg.cartao { display: block; animation: entrar 0.35s ease both; }
+/* Cartão de denúncia embutido no chat */
 .cartao-denuncia {
-  font-size: 1rem; /* base do formulário; "Letras maiores" muda só este valor */
-  background: var(--superficie);
-  border: 1px solid var(--balao-borda);
-  border-radius: 18px;
+  background: #fff;
+  border: 1.5px solid var(--linha);
+  border-radius: var(--raio-m);
   padding: 16px;
+  box-shadow: 0 1px 3px rgb(15 23 42 / 6%);
   max-width: 100%;
   overflow: clip;
 }
 .cartao-denuncia.cancelada { background: transparent; border-style: dashed; border-color: var(--linha); }
-.cartao-denuncia.enviada { border-color: rgba(125, 180, 255, 0.55); box-shadow: 0 0 0 4px rgba(125, 180, 255, 0.08); }
+.cartao-denuncia.enviada { border-color: var(--verde); box-shadow: 0 0 0 4px rgba(47, 111, 94, 0.1); }
 
 .cartao-denuncia { scroll-margin-top: 6px; }
 .cd-topo {
-  position: sticky; /* o escudo acompanha quem está preenchendo, mesmo rolando o formulário */
-  top: calc(var(--respiro-chat) * -1); /* o sticky respeita o padding da área de rolagem, então compensamos */
+  position: sticky;
+  top: calc(var(--respiro-chat) * -1);
   z-index: 2;
   display: flex;
   align-items: center;
   gap: 14px;
   margin: -16px -16px 14px;
   padding: 12px 16px 10px;
-  background: var(--superficie);
+  background: #fff;
   border-bottom: 1px solid var(--linha);
 }
 .cd-titulos { flex: 1; min-width: 0; }
-.cd-topo h2 { margin: 0; font-size: 1.05em; font-weight: 650; line-height: 1.25; }
-.cd-topo p { margin: 2px 0 0; font-size: 0.85em; color: var(--suave); line-height: 1.4; }
+.cd-topo h2 { margin: 0; font-size: 1.05em; font-weight: 650; line-height: 1.25; color: var(--noite); }
+.cd-topo p { margin: 2px 0 0; font-size: 0.85em; color: var(--texto-suave); line-height: 1.4; }
 
-/* Escudo que se preenche com o formulário */
 .escudo-progresso { flex: none; width: 56px; height: 56px; overflow: visible; }
 .escudo-progresso .trilho {
-  fill: rgba(125, 180, 255, 0.06);
+  fill: rgba(47, 111, 94, 0.06);
   stroke: var(--linha);
   stroke-width: 1.4;
   stroke-linejoin: round;
 }
 .escudo-progresso .avanco {
   fill: none;
-  stroke: var(--acento);
+  stroke: var(--verde);
   stroke-width: 1.8;
   stroke-linejoin: round;
   stroke-linecap: round;
@@ -389,53 +456,52 @@ button, textarea { font: inherit; color: inherit; }
 }
 .escudo-progresso .marca {
   fill: none;
-  stroke: var(--acento);
+  stroke: var(--verde);
   stroke-width: 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
   opacity: 0;
   transition: opacity 0.4s ease 0.3s;
 }
-.cartao-denuncia.enviada .escudo-progresso .trilho { fill: rgba(125, 180, 255, 0.16); }
+.cartao-denuncia.enviada .escudo-progresso .trilho { fill: rgba(47, 111, 94, 0.16); }
 .cartao-denuncia.enviada .escudo-progresso .avanco { stroke-dashoffset: 0 !important; }
 .cartao-denuncia.enviada .escudo-progresso .marca { opacity: 1; }
 .escudo-progresso.pensando .avanco { animation: desenhar 1.9s ease-in-out infinite; }
 .escudo-progresso.pensando .marca { opacity: 0.4; }
 
-/* Pílulas: o que ajuda nas provas */
 .pilulas { list-style: none; margin: 0 0 14px; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .pilula {
   padding: 2px 10px;
   border-radius: 999px;
   border: 1px solid var(--linha);
-  color: var(--suave);
+  color: var(--texto-suave);
   font-size: 0.8em;
   line-height: 1.5;
   transition: background 0.25s, color 0.25s, border-color 0.25s;
 }
 .pilula::before { content: "○ "; }
-.pilula.ok { background: rgba(125, 180, 255, 0.16); border-color: rgba(125, 180, 255, 0.6); color: #fff; }
-.pilula.ok::before { content: "✓ "; color: var(--acento); }
+.pilula.ok { background: var(--verde-claro); border-color: var(--verde); color: var(--noite); }
+.pilula.ok::before { content: "✓ "; color: var(--verde); }
 
 .cd-form { display: flex; flex-direction: column; gap: 14px; }
 .campo { display: flex; flex-direction: column; gap: 6px; }
-.campo > span { font-weight: 600; font-size: 0.92em; }
-.campo .dica { color: var(--suave); font-size: 0.82em; margin-top: -4px; }
-.campo .contador { align-self: flex-end; color: var(--suave); font-size: 0.75em; }
+.campo > span { font-weight: 600; font-size: 0.92em; color: var(--noite); }
+.campo .dica { color: var(--texto-suave); font-size: 0.82em; margin-top: -4px; }
+.campo .contador { align-self: flex-end; color: var(--texto-fraco); font-size: 0.75em; }
 .cd-form textarea, .cd-form select, .cd-form input[type="text"] {
   width: 100%;
   min-width: 0;
-  background: var(--fundo);
+  background: #fff;
   color: var(--texto);
-  border: 1px solid var(--linha);
+  border: 1.5px solid #B9C8CE;
   border-radius: 10px;
   padding: 8px 10px;
   font: inherit;
   font-size: 0.95em;
 }
 .cd-form textarea { resize: vertical; min-height: 96px; line-height: 1.5; }
-.cd-form textarea::placeholder, .cd-form input::placeholder { color: #6f819f; }
-.cd-form textarea:focus, .cd-form select:focus, .cd-form input[type="text"]:focus { outline: 0; border-color: var(--acento); }
+.cd-form textarea::placeholder, .cd-form input::placeholder { color: var(--texto-fraco); }
+.cd-form textarea:focus, .cd-form select:focus, .cd-form input[type="text"]:focus { outline: 0; border-color: var(--foco); }
 .cd-form :disabled { opacity: 0.55; cursor: not-allowed; }
 
 .provas { display: flex; flex-direction: column; gap: 12px; }
@@ -447,190 +513,296 @@ button, textarea { font: inherit; color: inherit; }
   border: 1px solid var(--linha);
   border-radius: 10px;
   background: transparent;
-  color: var(--suave);
-  font-size: 1.2em;
-  line-height: 1;
+  color: var(--texto-suave);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.remover:hover { background: #fef2f2; color: var(--erro); border-color: #fecaca; }
+
+.cd-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+.cd-acoes button {
+  border-radius: var(--raio-p);
+  padding: 8px 16px;
+  font-weight: 600;
+  font-size: 0.9rem;
   cursor: pointer;
 }
-.remover:hover:not(:disabled) { color: var(--erro); border-color: var(--erro); }
-.adicionar {
-  align-self: flex-start;
-  background: transparent;
-  border: 1px dashed var(--balao-borda);
-  border-radius: 10px;
+.cd-acoes .primario {
+  background: var(--verde);
+  color: #fff;
+  border: 0;
+}
+.cd-acoes .primario:hover:not(:disabled) { background: var(--verde-escuro); }
+.cd-acoes .secundario {
+  background: #fff;
+  color: var(--petroleo);
+  border: 1.5px solid var(--linha);
+}
+.cd-acoes .secundario:hover:not(:disabled) { border-color: var(--petroleo); }
+
+@media (max-width: 560px) {
+  .so-grande { display: none; }
+  .so-pequeno { display: inline; }
+  .sugestoes { grid-template-columns: 1fr; margin-left: 0; }
+  .prova { grid-template-columns: 1fr; }
+  .acoes-topo { gap: 6px; }
+}
+
+/* ===== Botão "Letras maiores" — igual à página antiga =====
+   Cole no FIM de chat.css, DEPOIS do arquivo duvidas-branca.css.
+   Motivo: no arquivo anterior, o .letras estava dentro da regra
+   "sem estilização". Esta regra vem depois e desfaz isso.
+   Se preferir, apague ".cartao-denuncia .letras" daquela regra antiga.
+   Não mexe em formulario.js: o JS já troca o texto e a classe. */
+
+/* --- O botão volta a ser pílula, como na página antiga --- */
+.cd-topo .letras,
+.cartao-denuncia .letras {
+  all: unset;
+  box-sizing: border-box;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
   padding: 6px 12px;
-  font-size: 0.85em;
-  color: var(--acento);
+  background: #fff;
+  border: 1.5px solid var(--linha);
+  border-radius: 999px;
+  color: var(--texto-suave);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.3;
   cursor: pointer;
+  text-decoration: none;
 }
-.adicionar:hover:not(:disabled) { background: rgba(125, 180, 255, 0.08); }
+.cd-topo .letras:hover,
+.cartao-denuncia .letras:hover {
+  color: var(--noite);
+  border-color: var(--texto-suave);
+  background: var(--fundo-suave);
+}
+.cd-topo .letras:focus-visible,
+.cartao-denuncia .letras:focus-visible {
+  outline: 2px solid var(--foco);
+  outline-offset: 3px;
+}
+/* Estado ativo = "Letras normais", igual à página antiga */
+.cd-topo .letras[aria-pressed="true"],
+.cartao-denuncia .letras[aria-pressed="true"] {
+  background: var(--verde-claro);
+  border-color: var(--verde);
+  color: var(--verde-escuro);
+}
 
-/* Passos numerados: cada parte do formulário é um cartão com título */
-.passo { display: flex; flex-direction: column; gap: 10px; padding: 14px; border: 1px solid var(--linha); border-radius: 14px; background: rgba(255, 255, 255, 0.015); }
-.passo-titulo { margin: 0; font-size: 1.02em; font-weight: 650; line-height: 1.35; color: #fff; }
-.passo > .dica { margin: -4px 0 0; color: var(--suave); font-size: 0.85em; line-height: 1.5; }
+/* --- O que faltava no chat.css original: o aumento de verdade ---
+   O JS só adiciona .letras-grandes no cartão. Sem regra CSS para
+   essa classe, o texto não crescia. Estas regras fazem o cartão
+   inteiro crescer, como no print da página antiga. */
+.cartao-denuncia.letras-grandes {
+  font-size: 19px; /* base: 16px -> 19px, tudo em "em" acompanha */
+}
+.cartao-denuncia.letras-grandes .cd-topo h2 { font-size: 1.25em; }
+.cartao-denuncia.letras-grandes .cd-topo p { font-size: 1em; }
+.cartao-denuncia.letras-grandes .passo-titulo { font-size: 1.1em; }
+.cartao-denuncia.letras-grandes .campo > span,
+.cartao-denuncia.letras-grandes .campo .dica,
+.cartao-denuncia.letras-grandes .prints-bloco,
+.cartao-denuncia.letras-grandes .ajuda-botao,
+.cartao-denuncia.letras-grandes .ajuda-item p,
+.cartao-denuncia.letras-grandes .duvida summary,
+.cartao-denuncia.letras-grandes .duvida p,
+.cartao-denuncia.letras-grandes .pilula,
+.cartao-denuncia.letras-grandes .adicionar,
+.cartao-denuncia.letras-grandes .cd-acoes button {
+  font-size: 1em;
+  line-height: 1.55;
+}
+.cartao-denuncia.letras-grandes .cd-form textarea,
+.cartao-denuncia.letras-grandes .cd-form select,
+.cartao-denuncia.letras-grandes .cd-form input[type="text"] {
+  font-size: 1em;
+  padding: 10px 12px;
+}
+.cartao-denuncia.letras-grandes .cd-topo .letras { font-size: 0.9rem; }
 
-/* Botão "?" que abre a explicação logo abaixo do campo */
-.ajuda-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
-.ajuda-botao {
+/* ===== Botão "+ Adicionar outra prova" — versão branca =====
+   Cole no FIM de chat.css, depois do bloco das dúvidas.
+   Classe no JS: .adicionar (formulario.js). Não mexe no JS. */
+
+.cd-form .adicionar {
+  align-self: flex-start;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  max-width: 100%;
-  padding: 4px 2px;
-  background: transparent;
-  border: 0;
-  color: var(--acento);
+  margin: 2px 0 0;
+  padding: 8px 14px;
+  background: var(--verde-claro);
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  color: var(--verde-escuro);
   font: inherit;
   font-size: 0.88em;
-  line-height: 1.35;
-  text-align: left;
+  font-weight: 650;
+  line-height: 1.3;
   cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s;
 }
-.ajuda-botao > span:last-child { text-decoration: underline; text-decoration-color: rgba(125, 180, 255, 0.4); text-underline-offset: 3px; }
-.ajuda-botao:hover > span:last-child { text-decoration-color: currentColor; }
-.icone-ajuda {
-  flex: none;
+.cd-form .adicionar:hover:not(:disabled) {
+  background: #d4eddf;
+  border-color: var(--verde);
+  color: var(--noite);
+}
+.cd-form .adicionar:active:not(:disabled) { transform: translateY(1px); }
+.cd-form .adicionar:focus-visible {
+  outline: 2px solid var(--foco);
+  outline-offset: 3px;
+}
+.cd-form .adicionar:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* O "×" de remover cada prova: mesmo padrão leve, sem virar botão pesado */
+.cd-form .remover {
+  background: #fff;
+  border: 1.5px solid var(--linha);
+  color: var(--texto-suave);
+  font-size: 1.15em;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.cd-form .remover:hover { background: #fef2f2; border-color: #fecaca; color: var(--erro); }
+.cd-form .remover:focus-visible { outline: 2px solid var(--foco); outline-offset: 2px; }
+
+/* ===== Dúvidas — versão branca (design final) =====
+   Cole no FIM de chat.css. Não mexe em formulario.js nem ajuda.js.
+   Replica o cartão da versão escura, adaptado ao claro:
+   fundo branco, borda suave, "+" que vira "–" ao abrir. */
+
+/* --- Botões de ajuda SEM estilização de botão ---
+   Vira texto/link simples: sem fundo, sem borda, sem sombra, sem pílula.
+   Vale para o "?" ao lado de cada campo e para "Letras maiores". */
+.ajuda-botao,
+.cartao-denuncia .letras {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: var(--verde-escuro);
+  font: inherit;
+  font-size: 0.88em;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.ajuda-botao:hover,
+.cartao-denuncia .letras:hover { color: var(--noite); }
+.ajuda-botao:focus-visible,
+.cartao-denuncia .letras:focus-visible {
+  outline: 2px solid var(--foco);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+/* O "?" continua como marquinha, mas sem virar botão/pílula */
+.ajuda-botao .icone-ajuda {
+  all: unset;
   display: inline-grid;
   place-items: center;
-  width: 1.6em;
-  height: 1.6em;
-  border: 1.5px solid var(--acento);
-  border-radius: 50%;
-  font-weight: 700;
-  font-size: 0.9em;
-  line-height: 1;
-}
-.ajuda-botao[aria-expanded="true"] .icone-ajuda { background: var(--acento); color: #0c1424; }
-.ajuda-painel { width: 100%; padding: 12px 14px; border-radius: 12px; background: rgba(125, 180, 255, 0.07); border: 1px solid rgba(125, 180, 255, 0.28); color: var(--texto); font-size: 0.9em; line-height: 1.55; }
-.ajuda-painel[hidden], .marcar[hidden] { display: none; }
-.ajuda-item h4 { margin: 0 0 6px; font-size: 1em; font-weight: 650; }
-.ajuda-item p { margin: 0 0 8px; overflow-wrap: anywhere; }
-.ajuda-item p:last-child { margin-bottom: 0; }
-.ajuda-item ol { margin: 0 0 8px; padding-left: 1.4em; }
-.ajuda-item li { margin-bottom: 4px; overflow-wrap: anywhere; }
-.ajuda-item + .ajuda-item { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--linha); }
-
-/* Prints enviados no chat: só o "código" (hash) é guardado */
-.prints-bloco { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border: 1px dashed var(--balao-borda); border-radius: 12px; }
-.prints-bloco.com-prints { border-style: solid; border-color: rgba(125, 180, 255, 0.45); background: rgba(125, 180, 255, 0.05); }
-.prints-bloco h4 { margin: 0; font-size: 0.95em; font-weight: 650; }
-.prints-texto { margin: 0; color: var(--suave); font-size: 0.88em; line-height: 1.5; }
-.marcar { display: flex; align-items: flex-start; gap: 10px; font-size: 0.92em; line-height: 1.45; cursor: pointer; }
-.marcar input { flex: none; width: 1.25em; height: 1.25em; margin: 0.1em 0 0; accent-color: var(--acento); }
-
-/* "Ainda tem dúvidas?": fica depois do botão Enviar e só traz o que não aparece no "?" de um campo */
-.duvidas { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; padding-top: 14px; border-top: 1px solid var(--linha); }
-.duvidas .passo-titulo { margin-bottom: 2px; }
-details.duvida { border: 1px solid var(--linha); border-radius: 12px; background: rgba(255, 255, 255, 0.015); }
-details.duvida summary { display: flex; align-items: center; gap: 10px; padding: 10px 14px; font-size: 0.92em; line-height: 1.4; cursor: pointer; list-style: none; }
-details.duvida summary::-webkit-details-marker { display: none; }
-details.duvida summary::before { content: "+"; flex: none; width: 1em; text-align: center; color: var(--acento); font-weight: 700; }
-details.duvida[open] summary { color: #fff; font-weight: 600; }
-details.duvida[open] summary::before { content: "−"; }
-details.duvida p { margin: 0 14px 10px 38px; color: var(--suave); font-size: 0.9em; line-height: 1.55; overflow-wrap: anywhere; }
-details.duvida p:last-child { margin-bottom: 12px; }
-
-/* Botão "Letras maiores" e o modo de letras grandes */
-.letras {
+  width: 20px;
+  height: 20px;
   flex: none;
-  align-self: flex-start;
-  padding: 4px 12px;
-  background: transparent;
-  border: 1px solid var(--balao-borda);
-  border-radius: 999px;
-  color: var(--acento);
-  font: inherit;
-  font-size: 0.82em;
-  line-height: 1.4;
-  white-space: nowrap;
-  cursor: pointer;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  font-size: 0.8em;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
 }
-.letras:hover { background: rgba(125, 180, 255, 0.1); }
-.letras[aria-pressed="true"] { background: rgba(125, 180, 255, 0.18); border-color: var(--acento); color: #fff; }
-.cartao-denuncia.letras-grandes { font-size: 1.25rem; }
-.cartao-denuncia.letras-grandes .prova { grid-template-columns: minmax(190px, 240px) minmax(0, 1fr) 46px; }
-.cartao-denuncia.letras-grandes .remover { width: 46px; height: 46px; }
-.cartao-denuncia.letras-grandes .escudo-progresso { width: 62px; height: 62px; }
-.cartao-denuncia.letras-grandes .cd-form textarea { min-height: 130px; }
+/* Painel que abre abaixo do botão: texto corrido, sem caixa de botão */
+.ajuda-painel { margin: 8px 0 2px; }
+.ajuda-item { padding: 0; }
+.ajuda-item + .ajuda-item { margin-top: 10px; }
+.ajuda-item h4 { margin: 0 0 4px; font-size: 0.95em; color: var(--noite); }
+.ajuda-item p { margin: 0 0 6px; color: var(--texto-suave); line-height: 1.55; }
 
-.cd-erro { margin: 0; padding: 8px 12px; border-radius: 10px; background: rgba(255, 155, 155, 0.1); border: 1px solid rgba(255, 155, 155, 0.35); color: var(--erro); font-size: 0.88em; }
-.cd-acoes { display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
-.cd-acoes .fantasma, .cd-acoes .primario { padding: 9px 16px; font-size: 0.92em; border-radius: 12px; }
-.primario {
-  background: var(--acento);
-  color: #0c1424;
-  border: 1px solid var(--acento);
-  font-weight: 650;
-  cursor: pointer;
+/* --- Seção "Ainda tem dúvidas?" igual à escura, no claro --- */
+.duvidas {
+  margin-top: 6px;
+  padding: 14px;
+  background: #f4f8f5; /* verde bem clarinho, como o fundo do cartão escuro */
+  border: 1px solid var(--linha);
+  border-radius: 14px;
 }
-.primario:hover:not(:disabled) { background: #9cc5ff; }
+.duvidas > .passo-titulo { margin: 0 0 12px; }
 
-/* Resultado: protocolo e código */
-.aviso-codigo { margin: 0 0 12px; padding: 10px 12px; border-radius: 12px; background: rgba(255, 207, 112, 0.09); border: 1px solid rgba(255, 207, 112, 0.3); color: #ffe3a8; font-size: 0.9em; }
-.dado { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 8px 0; border-top: 1px solid var(--linha); }
-.rotulo-dado { flex: none; width: 110px; color: var(--suave); font-size: 0.85em; }
-.dado code { flex: 1; min-width: 0; overflow-wrap: anywhere; font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: 1.02em; color: #fff; background: #16233f; padding: 4px 10px; border-radius: 8px; }
-.nota { margin: 12px 0 0; font-size: 0.86em; color: var(--suave); }
-.cartao-denuncia.cancelada .nota { margin: 0; }
-
-/* ---------- Janela de "tem certeza?" ---------- */
-.dialogo {
-  width: min(420px, calc(100vw - 32px));
-  background: var(--superficie);
-  color: var(--texto);
-  border: 1px solid var(--balao-borda);
-  border-radius: 18px;
-  padding: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+.duvida {
+  background: #fff;
+  border: 1px solid var(--linha);
+  border-radius: 12px;
+  overflow: clip;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
-.dialogo::backdrop { background: rgba(5, 9, 18, 0.7); backdrop-filter: blur(2px); }
-.dialogo h2 { margin: 0 0 8px; font-size: 1.1rem; font-weight: 650; }
-.dialogo p { margin: 0; color: var(--suave); font-size: 0.95rem; white-space: pre-line; }
-.conf-botoes { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
-.conf-botoes button { padding: 9px 16px; border-radius: 12px; font-size: 0.92rem; cursor: pointer; }
-.perigo { background: #ff8a8a; color: #2a0a0a; border: 1px solid #ff8a8a; font-weight: 650; }
-.perigo:hover { background: #ffa3a3; }
-
-/* ---------- Formulário em telas pequenas ---------- */
-@media (max-width: 560px) {
-  .acoes-topo { gap: 6px; }
-  .destaque, .fantasma { padding: 6px 10px; }
-  .cartao-denuncia { padding: 14px 12px; border-radius: 16px; }
-  .cd-topo { margin: -14px -12px 12px; padding: 10px 12px 8px; gap: 12px; }
-  .cd-topo p { display: none; }
-  .cd-topo { align-items: center; }
-  .letras { padding: 4px 10px; }
-  .passo { padding: 12px 10px; }
-  .prints-bloco { padding: 10px; }
-  details.duvida summary { padding: 10px 12px; }
-  details.duvida p { margin: 0 12px 10px 12px; }
-  .provas { gap: 14px; }
-  .prova { gap: 6px 6px; }
-  .escudo-progresso { width: 46px; height: 46px; }
-  .prova { grid-template-columns: minmax(0, 1fr) 36px; }
-  .prova select { grid-column: 1 / -1; }
-  .prova input { grid-column: 1; }
-  .prova .remover { grid-column: 2; }
-  .cartao-denuncia.letras-grandes .prova { grid-template-columns: minmax(0, 1fr) 46px; }
-  .rotulo-dado { width: 100%; }
-  .cd-acoes > * { flex: 1; }
+.duvida + .duvida { margin-top: 8px; }
+.duvida:hover { border-color: #b9c8ce; }
+.duvida[open] {
+  border-color: var(--verde);
+  box-shadow: 0 1px 3px rgb(15 23 42 / 6%);
 }
 
-/* Campo-isca anti-robô: escondido de quem usa o site */
-.isca { position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
-
-/* ---------- Carregando antes do formulário ---------- */
-.carregando-form {
+.duvida summary {
+  list-style: none;
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 20px 18px;
-  background: var(--superficie);
-  border: 1px dashed var(--balao-borda);
-  border-radius: 18px;
+  gap: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95em;
+  color: var(--noite);
+  user-select: none;
 }
-.carregando-form .escudo { width: 52px; height: 52px; flex: none; display: block; }
-.carregando-texto { margin: 0; color: var(--suave); animation: aparecer 0.4s ease both; }
-@keyframes aparecer { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
-.cartao-denuncia { animation: entrar 0.45s ease both; }
+.duvida summary::-webkit-details-marker { display: none; }
+.duvida summary::marker { content: ""; }
+/* O "+" da versão escura — sem ser botão */
+.duvida summary::before {
+  content: "+";
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--verde-claro);
+  color: var(--verde-escuro);
+  font-size: 1.1em;
+  font-weight: 700;
+  line-height: 1;
+}
+.duvida[open] summary::before { content: "–"; background: var(--verde); color: #fff; }
+.duvida[open] summary { color: var(--verde-escuro); }
+.duvida summary:focus-visible {
+  outline: 2px solid var(--foco);
+  outline-offset: -2px;
+  border-radius: 12px;
+}
+.duvida p {
+  margin: 0;
+  padding: 0 14px 12px 46px; /* alinha com o texto, depois do "+" */
+  color: var(--texto-suave);
+  font-size: 0.92em;
+  line-height: 1.6;
+}
+.duvida p + p { padding-top: 0; }
+
+/* Letras grandes: o "+" e o texto acompanham */
+.cartao-denuncia.letras-grandes .duvida summary { font-size: 1.05em; }
+.cartao-denuncia.letras-grandes .duvida p { font-size: 1em; }

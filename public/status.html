@@ -4,23 +4,91 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Acompanhar caso | Rede Escudo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800&display=swap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <nav>
-    <a href="index.html">Conversar</a>
-    <a href="denuncia.html">Fazer denúncia</a>
-    <a href="status.html">Acompanhar caso</a>
-  </nav>
-  <h1>Acompanhar meu caso</h1>
-  <p>Use o protocolo e o código secreto que você recebeu ao enviar a denúncia.</p>
+  <header class="cabecalho">
+    <div class="container">
+      <a class="marca" href="index.html">
+        <span class="marca-icone" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.4 8.7-8 10-4.6-1.3-8-5-8-10V6l8-4z"/></svg>
+        </span>
+        Rede Escudo
+      </a>
+      <div class="cabecalho-acoes">
+        <nav class="nav-principal" aria-label="Principal">
+          <a href="index.html">Conversar</a>
+          <a href="denuncia.html">Denunciar</a>
+          <a href="status.html" aria-current="page">Acompanhar caso</a>
+        </nav>
+        <a class="btn-voltar" href="../Zagatec/index.php" title="Voltar ao site Zagatec">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Voltar ao site
+        </a>
+      </div>
+    </div>
+  </header>
 
-  <label for="protocolo">Protocolo</label>
-  <input id="protocolo" placeholder="ESC-XXXXXXXX">
-  <label for="codigo">Código secreto</label>
-  <input id="codigo" type="password">
-  <button id="consultar">Consultar</button>
-  <p id="saida" class="caixa oculto"></p>
+  <main class="pagina">
+    <div class="container" style="max-width: 28rem;">
+      <h1>Acompanhar meu caso</h1>
+      <p class="lead">Use o protocolo e o código secreto que você recebeu ao enviar a denúncia.</p>
+
+      <div class="campo">
+        <label for="protocolo">Protocolo</label>
+        <input id="protocolo" placeholder="ESC-XXXXXXXX">
+      </div>
+      <div class="campo">
+        <label for="codigo">Código secreto</label>
+        <input id="codigo" type="password">
+      </div>
+      <div class="acoes-form">
+        <button id="consultar" class="btn btn-primario">Consultar</button>
+      </div>
+      <p id="saida" class="caixa oculto"></p>
+    </div>
+  </main>
+
+  <footer class="rodape-site">
+    <div class="container rodape-grade">
+      <div>
+        <h2>Rede Escudo</h2>
+        <p>Canal anônimo de apoio e denúncia. Você conversa com uma IA; as denúncias podem ser encaminhadas às autoridades.</p>
+      </div>
+      <nav aria-label="Rodapé">
+        <h2>Navegação</h2>
+        <ul>
+          <li><a href="index.html">Conversar</a></li>
+          <li><a href="denuncia.html">Denunciar</a></li>
+          <li><a href="status.html">Acompanhar caso</a></li>
+          <li><a href="../Zagatec/index.php">Voltar ao Zagatec</a></li>
+        </ul>
+      </nav>
+      <div>
+        <h2>Em caso de urgência</h2>
+        <ul class="rodape-urgencia">
+          <li><strong>190</strong> <span>Polícia Militar</span></li>
+          <li><strong>100</strong> <span>Disque Direitos Humanos</span></li>
+          <li><strong>188</strong> <span>CVV, apoio emocional 24h</span></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Contato</h2>
+        <ul class="rodape-contato">
+          <li><span>Atendimento online e anônimo</span></li>
+          <li><span>Resposta em até 24 horas</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="rodape-base">
+      <div class="container">
+        <p>&copy; 2026 Rede Escudo · Visual alinhado ao Zagatec</p>
+      </div>
+    </div>
+  </footer>
 
   <script src="status.js"></script>
 </body>
