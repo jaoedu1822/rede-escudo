@@ -213,9 +213,7 @@ button, textarea { font: inherit; color: inherit; }
 .corpo strong { font-weight: 650; color: var(--noite); }
 
 .fontes {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px;
-  margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--linha);
-  font-size: 0.8rem; line-height: 1.4; color: var(--texto-suave);
+  display: none;
 }
 .fontes-rotulo { margin-right: 2px; }
 .fontes-item {
