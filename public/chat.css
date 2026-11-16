@@ -804,3 +804,26 @@ button, textarea { font: inherit; color: inherit; }
 /* Letras grandes: o "+" e o texto acompanham */
 .cartao-denuncia.letras-grandes .duvida summary { font-size: 1.05em; }
 .cartao-denuncia.letras-grandes .duvida p { font-size: 1em; }
+
+/* ===== Espaçamento do resultado da denúncia ===== */
+.cartao-denuncia .aviso-codigo {
+  margin: 0 0 14px;
+}
+.cartao-denuncia .dado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.cartao-denuncia .rotulo-dado {
+  font-weight: 600;
+  color: var(--noite);
+}
+.cartao-denuncia .dado code {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 0.95em;
+  background: var(--fundo-suave);
+  padding: 4px 10px;
+  border-radius: 8px;
+}
