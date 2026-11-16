@@ -749,7 +749,7 @@ export function criarFormulario({
       { className: "dado" },
       h("span", {
         className: "rotulo-dado",
-        texto: rotulo,
+        texto: `${rotulo}:`,
       }),
       h("code", { texto: valor }),
       copiar
@@ -775,20 +775,7 @@ export function criarFormulario({
       ),
 
       dado("Protocolo", protocolo),
-      dado("Código secreto", codigo),
-
-      h(
-        "p",
-        { className: "nota" },
-        "Com eles você acompanha o andamento em ",
-        h("a", {
-          href: "status.html",
-          target: "_blank",
-          rel: "noopener",
-          texto: "Acompanhar denúncia",
-        }),
-        "."
-      )
+      dado("Código secreto", codigo)
     );
   }
 
