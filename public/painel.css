@@ -497,3 +497,34 @@ dialog.detalhe::backdrop { background: rgba(15, 23, 42, 0.45); backdrop-filter: 
 @media (prefers-reduced-motion: reduce) {
   dialog.detalhe[open] { animation: none; }
 }
+
+/* Selo Z da Zagatec no cabeçalho */
+.logo-zagatec {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 9px;
+  background: #0f172a;
+  color: #fff;
+  font-family: 'Figtree', Inter, system-ui, sans-serif;
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  user-select: none;
+}
+
+.marca-com-zagatec {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.divisor-zagatec {
+  width: 1px;
+  height: 22px;
+  background: var(--linha, #e2e8f0);
+  flex: none;
+}
