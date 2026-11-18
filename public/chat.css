@@ -910,7 +910,12 @@ button, textarea { font: inherit; color: inherit; }
     overflow: visible !important;
   }
 
-  /* Selo Z da Zagatec no cabeçalho */
+ 
+
+  
+}
+
+ /* Selo Z da Zagatec no cabeçalho */
 .logo-zagatec {
   flex: none;
   width: 32px;
@@ -939,7 +944,4 @@ button, textarea { font: inherit; color: inherit; }
   height: 22px;
   background: var(--linha, #e2e8f0);
   flex: none;
-}
-
-  
 }
