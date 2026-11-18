@@ -484,15 +484,19 @@ export function criarFormulario({
     )
   );
 
-  // Campo-isca anti-robô
+ // Campo-isca anti-robô (protegido contra preenchimento automático do navegador)
   const isca = h("input", {
     type: "text",
-    name: "isca",
+    name: "campo_aux_verificacao",
     tabindex: "-1",
-    autocomplete: "off",
+    autocomplete: "new-password",
+    readonly: true,
     "aria-hidden": "true",
     className: "isca",
   });
+
+  // Garante que o navegador não preencha via autofill silencioso
+  isca.value = "";
 
   const erro = h("p", {
     className: "cd-erro",
