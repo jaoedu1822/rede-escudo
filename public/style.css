@@ -292,6 +292,103 @@ input:focus, select:focus, textarea:focus {
   margin-top: 1.5rem;
 }
 
+/* ---------- Linha do tempo de progresso (estilo entrega) ---------- */
+.status-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .5rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--linha);
+}
+.status-cabecalho strong {
+  color: var(--noite);
+  font-size: 1rem;
+}
+.status-data {
+  font-size: .85rem;
+  color: var(--texto-suave);
+}
+
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+.timeline-item {
+  position: relative;
+  padding-left: 2.25rem;
+  padding-bottom: 1.5rem;
+}
+.timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.timeline-item:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 11px;
+  top: 24px;
+  bottom: 0;
+  width: 2px;
+  background: var(--linha);
+}
+.timeline-item.concluido:not(:last-child)::before {
+  background: var(--verde);
+}
+
+.timeline-marcador {
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--branco);
+  border: 2px solid var(--linha);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--branco);
+  z-index: 1;
+}
+
+.timeline-item.concluido .timeline-marcador {
+  background: var(--verde);
+  border-color: var(--verde);
+}
+
+.timeline-item.atual .timeline-marcador {
+  background: var(--verde);
+  border-color: var(--verde);
+  box-shadow: 0 0 0 4px var(--verde-claro);
+}
+.timeline-item.atual .timeline-titulo {
+  color: var(--verde-escuro);
+  font-weight: 800;
+}
+
+.timeline-item.pendente .timeline-titulo {
+  color: var(--texto-fraco);
+}
+
+.timeline-titulo {
+  display: block;
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--noite);
+  line-height: 1.3;
+}
+.timeline-desc {
+  display: block;
+  font-size: .85rem;
+  color: var(--texto-suave);
+  margin-top: .2rem;
+}
+
 /* ---------- Rodapé (igual Zagatec) ---------- */
 .rodape-site {
   background: var(--noite);
@@ -360,4 +457,4 @@ input:focus, select:focus, textarea:focus {
 }
 
 .oculto { display: none !important; }
-
+```[cite: 31]
