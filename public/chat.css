@@ -827,3 +827,86 @@ button, textarea { font: inherit; color: inherit; }
   padding: 4px 10px;
   border-radius: 8px;
 }
+
+/* ==========================================================================
+   Ajustes para celular e modo "Letras maiores" no formulário do chat
+   ========================================================================== */
+@media (max-width: 640px) {
+  /* 1. Compacta o topo da página (.topo) e coloca os botões em linha */
+  .topo {
+    padding: 0.6rem 0.85rem !important;
+    gap: 0.5rem !important;
+  }
+
+  .marca-site p {
+    font-size: 0.8rem !important;
+    line-height: 1.3 !important;
+  }
+
+  .acoes-topo {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    width: 100% !important;
+    gap: 0.35rem !important;
+  }
+
+  .acoes-topo .btn-voltar,
+  .acoes-topo button {
+    flex: 1 1 auto !important;
+    justify-content: center !important;
+    padding: 0.4rem 0.6rem !important;
+    font-size: 0.82rem !important;
+  }
+
+  /* 2. Compacta a barra escura de emergência */
+  .emergencia {
+    padding: 0.45rem 0.75rem !important;
+    margin: 0.4rem 0.75rem !important;
+    font-size: 0.82rem !important;
+    gap: 0.35rem !important;
+  }
+
+  /* 3. Otimiza o card do formulário injetado dentro de #chat */
+  #chat > * {
+    max-width: 100% !important;
+  }
+
+  /* Faz o cabeçalho interno ("Denúncia anônima" + "Letras maiores") não travar a tela */
+  #chat header,
+  #chat [class*="topo"],
+  #chat [class*="cabecalho"],
+  #chat [class*="header"] {
+    position: static !important;
+    flex-shrink: 0 !important;
+    padding: 0.75rem 0.9rem !important;
+    gap: 0.4rem 0.65rem !important;
+    flex-wrap: wrap !important;
+  }
+
+  /* Oculta o escudo decorativo grande dentro do card no celular para dar espaço ao texto */
+  #chat header svg,
+  #chat [class*="cabecalho"] svg,
+  #chat [class*="header"] svg {
+    display: none !important;
+  }
+
+  /* Evita que o subtítulo fique espremido em 5 linhas estreitas */
+  #chat header p,
+  #chat [class*="cabecalho"] p,
+  #chat [class*="header"] p {
+    width: 100% !important;
+    font-size: 0.85rem !important;
+    line-height: 1.35 !important;
+  }
+
+  /* 4. Garante que, ao ativar "Letras maiores", o card inteiro role sem cortar campos */
+  .app[class*="maior"] #chat > *,
+  body[class*="maior"] #chat > *,
+  html[class*="maior"] #chat > *,
+  #chat [class*="maior"] {
+    max-height: none !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+}
