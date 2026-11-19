@@ -417,7 +417,7 @@ app.post(
     // Impressões digitais (SHA-256) dos prints enviados no chat: só o código de 64 letras e números, nunca a imagem.
     // "original" foi calculada no navegador da vítima (do arquivo antes de reduzir); "lida", no servidor (da cópia que a IA leu).
     const hashes = [];
-    for (const im of (Array.isArray(req.body.imagens) ? req.body.imagens : []).slice(0, 10)) {
+    for (const im of (Array.isArray(req.body.imagens) ? req.body.imagens : []).slice(0, 20)) {
       for (const [campo, tipo] of [["original", "hash_original"], ["lida", "hash_copia_lida"]]) {
         const codigo = String(im?.[campo] ?? "").toLowerCase();
         if (/^[a-f0-9]{64}$/.test(codigo) && !hashes.some((x) => x.valor === codigo)) hashes.push({ tipo, valor: codigo });
