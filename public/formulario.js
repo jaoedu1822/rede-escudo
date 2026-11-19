@@ -220,8 +220,11 @@ export function criarFormulario({ escudo, enviar, confirmar, aoCancelar, aoConcl
     ...duvidasGerais().map((e) => h("details", { className: "duvida" }, h("summary", { texto: e.pergunta }), ...e.resposta.map((t) => h("p", { texto: t })))));
 
   // === ISCA (anti-robô) ===
-  // Campo-isca: invisível para gente (e fora do Tab), mas robôs de spam costumam preencher tudo
-  const isca = h("input", { type: "text", name: "isca", tabindex: "-1", autocomplete: "off", "aria-hidden": "true", className: "isca" });
+  // Campo-isca: invisível para gente (e fora do Tab), mas robôs de spam costumam preencher tudo.
+  // Protegido contra o preenchimento automático do navegador (readonly + autocomplete), para não mandar denúncia de verdade para a quarentena.
+  const isca = h("input", { type: "text", name: "campo_aux_verificacao", tabindex: "-1", autocomplete: "new-password", readonly: true, "aria-hidden": "true", className: "isca" });
+  // Garante que o navegador não preencha via autofill silencioso
+  isca.value = "";
 
   const erro = h("p", { className: "cd-erro", role: "alert", hidden: true });
   const mostrarErro = (t) => { erro.textContent = t; erro.hidden = false; };
@@ -327,7 +330,7 @@ export function criarFormulario({ escudo, enviar, confirmar, aoCancelar, aoConcl
     aoCancelar?.();
   });
 
-  // ---------- Resultado: protocolo e código (aparecem uma vez só) ----------
+  // ---------- Resultado ----------
   function dado(rotulo, valor) {
     const copiar = h("button", { type: "button", className: "fantasma", texto: "Copiar" });
     copiar.addEventListener("click", async () => {
@@ -339,7 +342,7 @@ export function criarFormulario({ escudo, enviar, confirmar, aoCancelar, aoConcl
       }
       setTimeout(() => (copiar.textContent = "Copiar"), 2000);
     });
-    return h("div", { className: "dado" }, h("span", { className: "rotulo-dado", texto: rotulo }), h("code", { texto: valor }), copiar);
+    return h("div", { className: "dado" }, h("span", { className: "rotulo-dado", texto: `${rotulo}:` }), h("code", { texto: valor }), copiar);
   }
 
   function mostrarResultado({ protocolo, codigo }) {
@@ -349,10 +352,56 @@ export function criarFormulario({ escudo, enviar, confirmar, aoCancelar, aoConcl
     corpo.replaceChildren(
       h("p", { className: "aviso-codigo" }, h("strong", { texto: "Guarde estes dois dados agora." }), " Eles aparecem só desta vez e nem a equipe consegue recuperar o código."),
       dado("Protocolo", protocolo),
-      dado("Código secreto", codigo),
-      h("p", { className: "nota" }, "Com eles você acompanha o andamento em ", h("a", { href: "status.html", target: "_blank", rel: "noopener", texto: "Acompanhar denúncia" }), ".")
+      dado("Código secreto", codigo)
     );
   }
+
+  // =====================================================
+  // CORREÇÃO DA ROLAGEM
+  // Controla diretamente a rolagem da área .chat.
+  // =====================================================
+
+  function posicionarNoTopo(behavior = "auto") {
+    const chat = el.closest(".chat");
+
+    // Caso não encontre a área .chat, utiliza o método convencional.
+    if (!chat) {
+      el.scrollIntoView({
+        block: "start",
+        inline: "nearest",
+        behavior,
+      });
+
+      return;
+    }
+
+    const ajustarRolagem = () => {
+      // Evita tentar posicionar um formulário que já foi removido.
+      if (!el.isConnected || !chat.isConnected) return;
+
+      const topoChat = chat.getBoundingClientRect();
+      const topoFormulario = el.getBoundingClientRect();
+
+      // Calcula a posição do formulário dentro da área rolável.
+      const deslocamento = topoFormulario.top - topoChat.top - chat.clientTop;
+
+      const destino = chat.scrollTop + deslocamento - 8;
+
+      // Move somente a área de conversa, não a página inteira.
+      chat.scrollTo({
+        top: Math.max(0, destino),
+        behavior,
+      });
+    };
+
+    // Aguarda dois quadros para garantir que o formulário
+    // já esteja inserido e que o navegador tenha calculado o layout.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(ajustarRolagem);
+    });
+  }
+
+  // ---------- Retorno ----------
 
   return {
     el,
@@ -360,12 +409,15 @@ export function criarFormulario({ escudo, enviar, confirmar, aoCancelar, aoConcl
     sujo,
     atualizarImagens: aoMudarPrints,
     focar() {
-      // Mostra o formulário desde o começo (escudo e título), não o fim dele
-      el.scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+      const movimentoReduzido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      posicionarNoTopo(movimentoReduzido ? "auto" : "smooth");
+
+      // Coloca o cursor no relato sem provocar nova rolagem.
       relato.focus({ preventScroll: true });
     },
     mostrarInicio() {
-      el.scrollIntoView({ block: "start" });
+      posicionarNoTopo("auto");
     },
   };
 }
