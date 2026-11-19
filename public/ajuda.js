@@ -4,12 +4,16 @@
 //
 // Cada item:
 //   id        nome interno (não aparece para a pessoa)
-//   campos    onde a ajuda aparece ao lado de um campo: relato, id_usuario, link, servidor, data_hora, prints.
-//             "geral" = só na lista "Ainda tem dúvidas?", no fim do formulário.
+//   campos    onde a ajuda aparece no formulário. Ao lado de um campo: relato, id_usuario, link, servidor, data_hora, prints.
+//             "geral" = na lista "Ainda tem dúvidas?", no fim do formulário. Só entra ali o que NÃO aparece ao lado de um campo,
+//             para a mesma explicação não repetir. "cabecalho" = o topo do formulário já diz isso, então ele não repete em lugar nenhum
+//             (o chat continua sabendo responder).
 //   pergunta  o texto do botão (e o título da dúvida)
 //   resposta  parágrafos curtos, um por item da lista
 //   palavras  jeitos de falar que ajudam o chat a achar este texto (a pessoa não vê)
 //   rag       false = este texto NÃO entra na base da IA, porque o conhecimento.md já explica o assunto (evita fontes repetidas)
+
+import { LIMITES } from "./limites.js";
 
 export const GLOSSARIO = [
   {
@@ -90,6 +94,17 @@ export const GLOSSARIO = [
     palavras: "hash, impressão digital, código do print, sha, sha256, verificação, integridade, prova de que não mudou",
   },
   {
+    id: "limite_prints",
+    campos: ["cabecalho"],
+    pergunta: "Quantos prints e arquivos posso anexar?",
+    resposta: [
+      `No formulário da denúncia, até ${LIMITES.PRINTS_POR_DENUNCIA} prints ou arquivos por denúncia, com no máximo ${LIMITES.MB_POR_ARQUIVO} MB cada. Dá para escolher vários de uma vez, arrastar para o formulário ou colar com Ctrl+V.`,
+      "Aceito prints e fotos (imagens), PDF e arquivos .txt. Os arquivos não são enviados nem guardados: o navegador só calcula o código de cada um.",
+      "Aqui no chat é um print ou um arquivo .txt por mensagem. Se você tiver mais, anexe tudo no formulário da denúncia.",
+    ],
+    palavras: "quantos prints, limite de prints, máximo de prints, quantas imagens, quantos arquivos, tamanho do arquivo, tamanho máximo, pdf, txt, anexar, anexo, enviar vários prints, mandar mais de um print",
+  },
+  {
     id: "prova",
     campos: ["geral"],
     pergunta: "O que é uma prova?",
@@ -134,7 +149,7 @@ export const GLOSSARIO = [
   },
   {
     id: "obrigatorio",
-    campos: ["geral"],
+    campos: ["cabecalho"],
     pergunta: "Preciso preencher tudo?",
     resposta: ["Não. Só o relato (“O que aconteceu?”) é obrigatório. O resto ajuda, mas pode ficar em branco."],
     palavras: "obrigatório, preencher tudo, campos, opcional, pular",
@@ -142,7 +157,7 @@ export const GLOSSARIO = [
   {
     id: "intima",
     rag: false,
-    campos: ["prints", "geral"],
+    campos: ["geral"],
     pergunta: "Posso mandar fotos íntimas como prova?",
     resposta: [
       "Não. Nunca envie fotos ou vídeos íntimos, nem para a gente. Se alguém está te ameaçando com isso, conte o que aconteceu com palavras e guarde só os prints das ameaças.",
@@ -165,3 +180,6 @@ export const GLOSSARIO = [
 
 /** Entradas que aparecem ao lado de um campo do formulário. */
 export const ajudaDoCampo = (campo) => GLOSSARIO.filter((e) => e.campos.includes(campo));
+
+/** Entradas da lista "Ainda tem dúvidas?", no fim do formulário (só as que não aparecem ao lado de um campo). */
+export const duvidasGerais = () => ajudaDoCampo("geral");
